@@ -13,6 +13,7 @@ def backup_configs():
         "hostapd": ["/etc/hostapd/hostapd.conf", "/etc/hostapd.conf"],
         "dnsmasq": ["/etc/dnsmasq.conf", "/etc/dnsmasq.d/"],
         "nftables": ["/etc/nftables.conf", "/etc/sysconfig/nftables.conf"],
+        "custom": ["/usr/local/bin/setup-hotspot-ip.sh"]
         # "interfaces": ["/etc/network/interfaces", "/etc/netplan/"]
     }
 
