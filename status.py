@@ -1,5 +1,33 @@
 import subprocess
 import shutil
+import re
+
+def get_active_ssids():
+    """Fetches SSIDs directly from the running hostapd process."""
+    if not shutil.which("hostapd_cli"):
+        return "❓ SSID: hostapd_cli not found (cannot query live SSID)"
+
+    try:
+        # Query hostapd for the status of the interface
+        # hostapd_cli status returns a block of key=value pairs
+        result = subprocess.run(
+            ["sudo", "hostapd_cli", "status"],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            return "❌ SSID: Could not query hostapd (is it running?)"
+
+        # Use regex to find the line starting with 'ssid[0]=' or just 'ssid='
+        ssids = re.findall(r'^ssid(?:\[\d+\])?=(.*)$', result.stdout, re.MULTILINE)
+
+        if ssids:
+            return f"📶 Active SSIDs: {', '.join(ssids)}"
+        return "⚠️  SSID: No active SSID found in hostapd status"
+
+    except Exception as e:
+        return f"❓ SSID: Error retrieving ({str(e)})"
 
 def check_service_status(service_name):
     """Checks if a systemd service is active."""
@@ -38,6 +66,9 @@ def main():
     services = ["hostapd", "dnsmasq", "nftables"]
     for service in services:
         print(check_service_status(service))
+
+    # Print live SSIDs
+    print(get_active_ssids())
 
 if __name__ == "__main__":
     main()
