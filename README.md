@@ -29,3 +29,21 @@ Plaintext
 [Service]
 ExecStartPre=/usr/local/bin/setup-hotspot-ip.sh
 
+
+
+
+
+
+
+
+To disable all sleep/suspend:
+Bash
+
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+To re-enable it later:
+Bash
+
+    sudo systemctl unmask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+    Note: This is very effective, but it will also prevent you from manually putting the computer to sleep from the Power menu.
